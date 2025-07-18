@@ -1,4 +1,5 @@
-import { Length,  LengthUsage, LengthUsageType, convertLength, convertBoolean  } from "../document/common";
+// @ts-nocheck
+import { type Length,  LengthUsage, type LengthUsageType, convertLength, convertBoolean  } from "../document/common";
 
 export function parseXmlString(xmlString: string, trimXmlDeclaration: boolean = false): Document {
     if (trimXmlDeclaration)

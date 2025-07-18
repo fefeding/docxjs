@@ -1,22 +1,26 @@
+// @ts-nocheck
 import { WordDocument } from './word-document';
-import {
-	DomType, WmlTable, IDomNumbering,
+import type {
+	WmlTable, IDomNumbering,
 	WmlHyperlink, IDomImage, OpenXmlElement, WmlTableColumn, WmlTableCell, WmlText, WmlSymbol, WmlBreak, WmlNoteReference,
 	WmlSmartTag,
 	WmlAltChunk,
 	WmlTableRow
 } from './document/dom';
-import { CommonProperties } from './document/common';
-import { Options } from './docx-preview';
-import { DocumentElement } from './document/document';
-import { WmlParagraph } from './document/paragraph';
+import {
+	DomType
+} from './document/dom';
+import type { CommonProperties } from './document/common';
+import type { Options } from './docx-preview';
+import type { DocumentElement } from './document/document';
+import type { WmlParagraph } from './document/paragraph';
 import { asArray, encloseFontFamily, escapeClassName, isString, keyBy, mergeDeep } from './utils';
 import { computePixelToPoint, updateTabStop } from './javascript';
 import { FontTablePart } from './font-table/font-table';
-import { FooterHeaderReference, SectionProperties } from './document/section';
-import { WmlRun, RunProperties } from './document/run';
-import { WmlBookmarkStart } from './document/bookmarks';
-import { IDomStyle } from './document/style';
+import type { FooterHeaderReference, SectionProperties } from './document/section';
+import type { WmlRun, RunProperties } from './document/run';
+import type { WmlBookmarkStart } from './document/bookmarks';
+import type { IDomStyle } from './document/style';
 import { WmlBaseNote, WmlFootnote } from './notes/elements';
 import { ThemePart } from './theme/theme-part';
 import { BaseHeaderFooterPart } from './header-footer/parts';

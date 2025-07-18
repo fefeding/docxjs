@@ -61,7 +61,7 @@ export function convertBoolean(v: string, defaultValue = false): boolean {
     }
 }
 
-export function convertPercentage(val: string): number {
+export function convertPercentage(val: string): number|null {
     return val ? parseInt(val) / 100 : null;
 }
 

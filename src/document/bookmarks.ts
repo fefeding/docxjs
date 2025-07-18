@@ -1,5 +1,5 @@
 import { XmlParser } from "../parser/xml-parser";
-import { DomType, OpenXmlElement } from "./dom";
+import { DomType, type OpenXmlElement } from "./dom";
 
 export interface WmlBookmarkStart extends OpenXmlElement {
     id: string;

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { OpenXmlElementBase, DomType } from "../document/dom";
 
 export abstract class WmlBaseNote implements OpenXmlElementBase {

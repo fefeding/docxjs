@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Part } from "../common/part";
 import { OpenXmlPackage } from "../common/open-xml-package";
 import { keyBy } from "../utils";

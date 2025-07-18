@@ -1,7 +1,7 @@
 import { OpenXmlPackage } from "../common/open-xml-package";
 import { Part } from "../common/part";
 import { DocumentParser } from "../document-parser";
-import { DocumentElement } from "./document";
+import type { DocumentElement } from "./document";
 
 export class DocumentPart extends Part {
     private _documentParser: DocumentParser;
@@ -11,7 +11,7 @@ export class DocumentPart extends Part {
         this._documentParser = parser;
     }
     
-    body: DocumentElement
+    body: DocumentElement = null as any;
 
     parseXml(root: Element) {
         this.body = this._documentParser.parseDocumentFile(root);

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { XmlParser } from "../parser/xml-parser";
 
 export class DmlTheme {

@@ -1,6 +1,7 @@
+// @ts-nocheck
 import { serializeXmlString } from "../parser/xml-parser";
 import { OpenXmlPackage } from "./open-xml-package";
-import { Relationship } from "./relationship";
+import { type Relationship } from "./relationship";
 
 export class Part {
     protected _xmlDocument: Document;

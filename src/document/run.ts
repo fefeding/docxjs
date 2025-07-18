@@ -1,6 +1,6 @@
 import { XmlParser } from "../parser/xml-parser";
-import { CommonProperties, parseCommonProperty } from "./common";
-import { OpenXmlElement } from "./dom";
+import { type CommonProperties, parseCommonProperty } from "./common";
+import { type OpenXmlElement } from "./dom";
 
 export interface WmlRun extends OpenXmlElement, RunProperties {
     id?: string;

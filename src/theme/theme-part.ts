@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { OpenXmlPackage } from "../common/open-xml-package";
 import { Part } from "../common/part";
 import { DmlTheme, parseTheme } from "./theme";

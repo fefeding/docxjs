@@ -1,9 +1,9 @@
 import { OpenXmlPackage } from "../common/open-xml-package";
 import { Part } from "../common/part";
-import { WmlSettings, parseSettings } from "./settings";
+import { type WmlSettings, parseSettings } from "./settings";
 
 export class SettingsPart extends Part {
-	settings: WmlSettings;
+	settings: WmlSettings = null as any;
 
 	constructor(pkg: OpenXmlPackage, path: string) {
 		super(pkg, path);

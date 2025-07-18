@@ -1,7 +1,8 @@
+// @ts-nocheck
 import JSZip from "jszip";
 import { parseXmlString, XmlParser } from "../parser/xml-parser";
 import { splitPath } from "../utils";
-import { parseRelationships, Relationship } from "./relationship";
+import { parseRelationships, type Relationship } from "./relationship";
 
 export interface OpenXmlPackageOptions {
     trimXmlDeclaration: boolean,

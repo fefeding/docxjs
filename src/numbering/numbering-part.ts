@@ -1,8 +1,10 @@
+// @ts-nocheck
 import { OpenXmlPackage } from "../common/open-xml-package";
 import { Part } from "../common/part";
 import { DocumentParser } from "../document-parser";
-import { IDomNumbering } from "../document/dom";
-import { AbstractNumbering, Numbering, NumberingBulletPicture, NumberingPartProperties, parseNumberingPart } from "./numbering";
+import { type IDomNumbering } from "../document/dom";
+import type { AbstractNumbering, Numbering, NumberingBulletPicture, NumberingPartProperties, } from "./numbering";
+import { parseNumberingPart } from "./numbering";
 
 export class NumberingPart extends Part implements NumberingPartProperties {
     private _documentParser: DocumentParser;

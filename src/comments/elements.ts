@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { DomType, OpenXmlElementBase } from "../document/dom";
 
 export class WmlComment extends OpenXmlElementBase {

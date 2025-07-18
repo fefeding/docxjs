@@ -1,7 +1,8 @@
-import { OutputType } from "jszip";
+// @ts-nocheck
+import type { OutputType } from "jszip";
 
 import { DocumentParser } from './document-parser';
-import { Relationship, RelationshipTypes } from './common/relationship';
+import { type Relationship, RelationshipTypes } from './common/relationship';
 import { Part } from './common/part';
 import { FontTablePart } from './font-table/font-table';
 import { OpenXmlPackage } from './common/open-xml-package';

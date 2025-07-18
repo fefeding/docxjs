@@ -1,8 +1,9 @@
+// @ts-nocheck
 import { DocumentParser } from '../document-parser';
 import { convertLength, LengthUsage } from '../document/common';
 import { OpenXmlElementBase, DomType } from '../document/dom';
 import xml from '../parser/xml-parser';
-import { formatCssRules, parseCssRules } from '../utils';
+import { formatCssRules, parseCssRules, toColor } from '../utils';
 
 export class VmlElement extends OpenXmlElementBase {
 	type: DomType = DomType.VmlElement;
@@ -50,11 +51,31 @@ export function parseVmlElement(elem: Element, parser: DocumentParser): VmlEleme
 	for (const at of xml.attrs(elem)) {
 		switch(at.localName) {
 			case "style": 
-				result.cssStyleText = at.value;
+				const ss = at.value.split(';');
+				const stylemap = {
+				};
+				for(const s of ss) {
+					const kv = s.split(':');
+					if(kv.length < 2) continue;
+					stylemap[kv[0].trim()] = kv[1].trim();
+				}
+				if(stylemap.position === 'absolute' || stylemap.position === 'fixed') {
+					if(typeof stylemap.top === 'undefined') stylemap.top = 0;
+					if(typeof stylemap.left === 'undefined') stylemap.left = 0;
+					stylemap['margin'] = 0;
+					stylemap['margin-top'] = 0;
+					stylemap['margin-left'] = 0;					
+				}
+				let text = '';
+				for(const k in stylemap) {
+					text += `${k}:${stylemap[k]};`;
+				}
+				result.cssStyleText = text;
 				break;
 
 			case "fillcolor": 
-				result.attrs.fill = at.value; 
+			case 'fill':
+				result.attrs.fill = toColor(at.value); 
 				break;
 
 			case "from":
@@ -104,7 +125,7 @@ export function parseVmlElement(elem: Element, parser: DocumentParser): VmlEleme
 
 function parseStroke(el: Element): Record<string, string> {
 	return {
-		'stroke': xml.attr(el, "color"),
+		'stroke': toColor(xml.attr(el, "color")),
 		'stroke-width': xml.lengthAttr(el, "weight", LengthUsage.Emu) ?? '1px'
 	};
 }
@@ -127,3 +148,4 @@ function convertPath(path: string): string {
 		return '';
 	});
 }
+

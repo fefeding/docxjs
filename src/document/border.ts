@@ -1,5 +1,5 @@
 import { XmlParser } from "../parser/xml-parser";
-import { Length, LengthUsage } from "./common";
+import { type Length, LengthUsage } from "./common";
 
 export interface Border {
     color: string;

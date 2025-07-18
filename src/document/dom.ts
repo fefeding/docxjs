@@ -76,7 +76,7 @@ export interface OpenXmlElement {
 }
 
 export abstract class OpenXmlElementBase implements OpenXmlElement {
-    type: DomType;
+    type: DomType = DomType.Document;
     children?: OpenXmlElement[] = [];
     cssStyle?: Record<string, string> = {};
     props?: Record<string, any>;

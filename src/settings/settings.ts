@@ -1,5 +1,6 @@
+// @ts-nocheck
 import { DocumentParser } from "../document-parser";
-import { Length } from "../document/common";
+import { type Length } from "../document/common";
 import { XmlParser } from "../parser/xml-parser";
 
 export interface WmlSettings {

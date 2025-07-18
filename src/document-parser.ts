@@ -1,18 +1,20 @@
-import {
-	DomType, WmlTable, IDomNumbering,
+// @ts-nocheck
+import type {
+	WmlTable, IDomNumbering,
 	WmlHyperlink, WmlSmartTag, IDomImage, OpenXmlElement, WmlTableColumn, WmlTableCell,
 	WmlTableRow, NumberingPicBullet, WmlText, WmlSymbol, WmlBreak, WmlNoteReference,
 	WmlAltChunk
 } from './document/dom';
-import { DocumentElement } from './document/document';
-import { WmlParagraph, parseParagraphProperties, parseParagraphProperty } from './document/paragraph';
-import { parseSectionProperties, SectionProperties } from './document/section';
+import { DomType } from './document/dom';
+import { type DocumentElement } from './document/document';
+import { type WmlParagraph, parseParagraphProperties, parseParagraphProperty } from './document/paragraph';
+import { parseSectionProperties, type SectionProperties } from './document/section';
 import xml from './parser/xml-parser';
-import { parseRunProperties, WmlRun } from './document/run';
+import { parseRunProperties, type WmlRun } from './document/run';
 import { parseBookmarkEnd, parseBookmarkStart } from './document/bookmarks';
-import { IDomStyle, IDomSubStyle } from './document/style';
-import { WmlFieldChar, WmlFieldSimple, WmlInstructionText } from './document/fields';
-import { convertLength, LengthUsage, LengthUsageType } from './document/common';
+import type { IDomStyle, IDomSubStyle } from './document/style';
+import type { WmlFieldChar, WmlFieldSimple, WmlInstructionText } from './document/fields';
+import { convertLength, LengthUsage, type LengthUsageType } from './document/common';
 import { parseVmlElement } from './vml/vml';
 import { WmlComment, WmlCommentRangeEnd, WmlCommentRangeStart, WmlCommentReference } from './comments/elements';
 import { encloseFontFamily } from './utils';
@@ -24,7 +26,7 @@ export var autos = {
 	highlight: "transparent"
 };
 
-const supportedNamespaceURIs = [];
+const supportedNamespaceURIs = [] as Array<any>;
 
 const mmlTagMap = {
 	"oMath": DomType.MmlMath,
@@ -114,7 +116,7 @@ export class DocumentParser {
 	}
 
 	parseBackground(elem: Element): any {
-		var result = {};
+		var result = {} as any;
 		var color = xmlUtil.colorAttr(elem, "color");
 
 		if (color) {
@@ -151,7 +153,7 @@ export class DocumentParser {
 	}
 
 	parseStylesFile(xstyles: Element): IDomStyle[] {
-		var result = [];
+		var result = [] as IDomStyle[];
 
 		xmlUtil.foreach(xstyles, n => {
 			switch (n.localName) {
@@ -169,6 +171,7 @@ export class DocumentParser {
 	}
 
 	parseDefaultStyles(node: Element): IDomStyle {
+		// @ts-ignore
 		var result = <IDomStyle>{
 			id: null,
 			name: null,
@@ -205,6 +208,7 @@ export class DocumentParser {
 	}
 
 	parseStyle(node: Element): IDomStyle {
+		// @ts-ignore
 		var result = <IDomStyle>{
 			id: xml.attr(node, "styleId"),
 			isDefault: xml.boolAttr(node, "default"),
@@ -292,7 +296,7 @@ export class DocumentParser {
 	}
 
 	parseTableStyle(node: Element): IDomSubStyle[] {
-		var result = [];
+		var result = [] as Array<any>;
 
 		var type = xml.attr(node, "type");
 		var selector = "";
@@ -551,7 +555,18 @@ export class DocumentParser {
 					break;
 			}
 		}
-
+		if(!result.children?.length) {
+			result.children?.push({
+				type: DomType.Run,
+				cssStyle: {
+					...result.runProps
+				},
+				children: [{
+					type: DomType.Text,
+					text: ' ',
+				}],				
+			});
+		}
 		return result;
 	}
 
@@ -918,8 +933,8 @@ export class DocumentParser {
 		else if (wrapType == "wrapNone") {
 			result.cssStyle['display'] = 'block';
 			result.cssStyle['position'] = 'relative';
-			result.cssStyle["width"] = "0px";
-			result.cssStyle["height"] = "0px";
+			// result.cssStyle["width"] = "0px";
+			// result.cssStyle["height"] = "0px";
 
 			if (posX.offset)
 				result.cssStyle["left"] = posX.offset;

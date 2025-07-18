@@ -1,10 +1,10 @@
-import { OpenXmlElement } from "./dom";
-import { CommonProperties, Length, ns, parseCommonProperty } from "./common";
-import { Borders } from "./border";
-import { parseSectionProperties, SectionProperties } from "./section";
-import { LineSpacing, parseLineSpacing } from "./line-spacing";
+import { type OpenXmlElement } from "./dom";
+import { type CommonProperties, type Length, ns, parseCommonProperty } from "./common";
+import { type Borders } from "./border";
+import { parseSectionProperties, type SectionProperties } from "./section";
+import { type LineSpacing, parseLineSpacing } from "./line-spacing";
 import { XmlParser } from "../parser/xml-parser";
-import { parseRunProperties, RunProperties } from "./run";
+import { parseRunProperties, type RunProperties } from "./run";
 
 export interface WmlParagraph extends OpenXmlElement, ParagraphProperties {
 }
