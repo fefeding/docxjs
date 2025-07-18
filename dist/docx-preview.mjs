@@ -97,24 +97,133 @@ function asArray(val) {
 function clamp(val, min, max) {
     return min > val ? min : (max < val ? max : val);
 }
+function hexToNumber(h) {
+    if (typeof h !== 'string')
+        return h;
+    h = h.toLowerCase();
+    let hex = '0123456789abcdef';
+    let v = 0;
+    let l = h.length;
+    for (let i = 0; i < l; i++) {
+        let iv = hex.indexOf(h[i]);
+        if (iv == 0)
+            continue;
+        for (let j = 1; j < l - i; j++) {
+            iv *= 16;
+        }
+        v += iv;
+    }
+    return v;
+}
+function hexToRGBA(hex) {
+    if (typeof hex === 'string')
+        hex = hex.trim();
+    else
+        return hex;
+    let res = hex;
+    if (res[0] == '#') {
+        if (res.includes(' ')) {
+            const ps = res.split(' ');
+            res = ps[0];
+        }
+        const color = {
+            a: 1
+        };
+        if (res.length >= 8) {
+            color.a = res.substr(1, 2);
+            color.g = res.substr(5, 2);
+            color.b = res.substr(7, 2);
+            color.r = res.substr(3, 2);
+            color.a = Number((hexToNumber(color.a) / 255).toFixed(4));
+            color.r = hexToNumber(color.r || 0);
+            color.g = hexToNumber(color.g || 0);
+            color.b = hexToNumber(color.b || 0);
+            res = color;
+        }
+        else if (res.length === 7 || res.length === 4) {
+            if (res.length === 4) {
+                color.g = res.substr(2, 1);
+                color.g = color.g + color.g;
+                color.b = res.substr(3, 1);
+                color.b = color.b + color.b;
+                color.r = res.substr(1, 1);
+                color.r = color.r + color.r;
+            }
+            else {
+                color.g = res.substr(3, 2);
+                color.b = res.substr(5, 2);
+                color.r = res.substr(1, 2);
+            }
+            color.r = hexToNumber(color.r || 0);
+            color.g = hexToNumber(color.g || 0);
+            color.b = hexToNumber(color.b || 0);
+            res = color;
+        }
+        else if (res.length === 5) {
+            color.a = res.substr(1, 1);
+            color.g = res.substr(3, 1);
+            color.b = res.substr(4, 1);
+            color.r = res.substr(2, 1);
+            color.r = hexToNumber(color.r || 0);
+            color.g = hexToNumber(color.g || 0);
+            color.b = hexToNumber(color.b || 0);
+            color.a = Number((hexToNumber(color.a) / 255).toFixed(4));
+            res = color;
+        }
+    }
+    if (typeof res === 'string') {
+        const m = res.match(/rgb(a)?\s*\(\s*([\d\.]+)\s*,\s*([\d\.]+)\s*,\s*([\d\.]+)\s*(,\s*[\d\.]+)?\s*\)/i);
+        if (m && m.length === 6) {
+            const color = {
+                r: Number(m[2]),
+                g: Number(m[3]),
+                b: Number(m[4]),
+                a: Number((m[5] || '1', ',').trimStart())
+            };
+            res = color;
+        }
+    }
+    return res;
+}
+function toColor(r, g, b, a) {
+    if (typeof r === 'string' && r) {
+        r = r.trim();
+        if (r[0] === '#' && (r.length === 4 || r.length === 7))
+            return r;
+        const color = hexToRGBA(r);
+        if (typeof color === 'string')
+            return color;
+        r = typeof color.r !== 'undefined' ? color.r : r;
+        g = typeof color.g !== 'undefined' ? color.g : g;
+        b = typeof color.b !== 'undefined' ? color.b : b;
+        a = typeof color.a !== 'undefined' ? color.a : a;
+    }
+    if (r && typeof r === 'object') {
+        g = r.g;
+        b = r.b;
+        a = r.a || 1;
+        r = r.r;
+    }
+    if (typeof r != 'undefined' && typeof g != 'undefined' && typeof b != 'undefined') {
+        if (typeof a != 'undefined') {
+            return 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
+        }
+        else {
+            return 'rgb(' + r + ',' + g + ',' + b + ')';
+        }
+    }
+    return r;
+}
 
 const ns$1 = {
-    wordml: "http://schemas.openxmlformats.org/wordprocessingml/2006/main",
-    drawingml: "http://schemas.openxmlformats.org/drawingml/2006/main",
-    picture: "http://schemas.openxmlformats.org/drawingml/2006/picture",
-    compatibility: "http://schemas.openxmlformats.org/markup-compatibility/2006",
-    math: "http://schemas.openxmlformats.org/officeDocument/2006/math"
-};
+    wordml: "http://schemas.openxmlformats.org/wordprocessingml/2006/main"};
 const LengthUsage = {
     Dxa: { mul: 0.05, unit: "pt" },
     Emu: { mul: 1 / 12700, unit: "pt" },
     FontSize: { mul: 0.5, unit: "pt" },
     Border: { mul: 0.125, unit: "pt", min: 0.25, max: 12 },
     Point: { mul: 1, unit: "pt" },
-    Percent: { mul: 0.02, unit: "%" },
-    LineHeight: { mul: 1 / 240, unit: "" },
-    VmlEmu: { mul: 1 / 12700, unit: "" },
-};
+    Percent: { mul: 0.02, unit: "%" }};
 function convertLength(val, usage = LengthUsage.Dxa) {
     if (val == null || /.+(p[xt]|[%])$/.test(val)) {
         return val;
@@ -286,6 +395,10 @@ function parseEmbedFontRef(elem, xml) {
 }
 
 class FontTablePart extends Part {
+    constructor() {
+        super(...arguments);
+        this.fonts = [];
+    }
     parseXml(root) {
         this.fonts = parseFonts(root, this._package.xmlParser);
     }
@@ -334,6 +447,7 @@ function normalizePath(path) {
 class DocumentPart extends Part {
     constructor(pkg, path, parser) {
         super(pkg, path);
+        this.body = null;
         this._documentParser = parser;
     }
     parseXml(root) {
@@ -693,6 +807,7 @@ class NumberingPart extends Part {
 class StylesPart extends Part {
     constructor(pkg, path, parser) {
         super(pkg, path);
+        this.styles = [];
         this._documentParser = parser;
     }
     parseXml(root) {
@@ -767,6 +882,7 @@ var DomType;
 })(DomType || (DomType = {}));
 class OpenXmlElementBase {
     constructor() {
+        this.type = DomType.Document;
         this.children = [];
         this.cssStyle = {};
     }
@@ -788,6 +904,7 @@ class WmlFooter extends OpenXmlElementBase {
 class BaseHeaderFooterPart extends Part {
     constructor(pkg, path, parser) {
         super(pkg, path);
+        this.rootElement = null;
         this._documentParser = parser;
     }
     parseXml(root) {
@@ -848,6 +965,10 @@ function safeParseToInt(value) {
 }
 
 class ExtendedPropsPart extends Part {
+    constructor() {
+        super(...arguments);
+        this.props = null;
+    }
     parseXml(root) {
         this.props = parseExtendedProps(root, this._package.xmlParser);
     }
@@ -887,6 +1008,10 @@ function parseCoreProps(root, xmlParser) {
 }
 
 class CorePropsPart extends Part {
+    constructor() {
+        super(...arguments);
+        this.props = null;
+    }
     parseXml(root) {
         this.props = parseCoreProps(root, this._package.xmlParser);
     }
@@ -1038,6 +1163,7 @@ function parseNoteProperties(elem, xml) {
 class SettingsPart extends Part {
     constructor(pkg, path) {
         super(pkg, path);
+        this.settings = null;
     }
     parseXml(root) {
         this.settings = parseSettings(root, this._package.xmlParser);
@@ -1057,6 +1183,10 @@ function parseCustomProps(root, xml) {
 }
 
 class CustomPropsPart extends Part {
+    constructor() {
+        super(...arguments);
+        this.props = [];
+    }
     parseXml(root) {
         this.props = parseCustomProps(root, this._package.xmlParser);
     }
@@ -1280,10 +1410,32 @@ function parseVmlElement(elem, parser) {
     for (const at of globalXmlParser.attrs(elem)) {
         switch (at.localName) {
             case "style":
-                result.cssStyleText = at.value;
+                const ss = at.value.split(';');
+                const stylemap = {};
+                for (const s of ss) {
+                    const kv = s.split(':');
+                    if (kv.length < 2)
+                        continue;
+                    stylemap[kv[0].trim()] = kv[1].trim();
+                }
+                if (stylemap.position === 'absolute' || stylemap.position === 'fixed') {
+                    if (typeof stylemap.top === 'undefined')
+                        stylemap.top = 0;
+                    if (typeof stylemap.left === 'undefined')
+                        stylemap.left = 0;
+                    stylemap['margin'] = 0;
+                    stylemap['margin-top'] = 0;
+                    stylemap['margin-left'] = 0;
+                }
+                let text = '';
+                for (const k in stylemap) {
+                    text += `${k}:${stylemap[k]};`;
+                }
+                result.cssStyleText = text;
                 break;
             case "fillcolor":
-                result.attrs.fill = at.value;
+            case 'fill':
+                result.attrs.fill = toColor(at.value);
                 break;
             case "from":
                 const [x1, y1] = parsePoint(at.value);
@@ -1324,7 +1476,7 @@ function parseVmlElement(elem, parser) {
 }
 function parseStroke(el) {
     return {
-        'stroke': globalXmlParser.attr(el, "color"),
+        'stroke': toColor(globalXmlParser.attr(el, "color")),
         'stroke-width': globalXmlParser.lengthAttr(el, "weight", LengthUsage.Emu) ?? '1px'
     };
 }
@@ -1805,6 +1957,18 @@ class DocumentParser {
                     break;
             }
         }
+        if (!result.children?.length) {
+            result.children?.push({
+                type: DomType.Run,
+                cssStyle: {
+                    ...result.runProps
+                },
+                children: [{
+                        type: DomType.Text,
+                        text: ' ',
+                    }],
+            });
+        }
         return result;
     }
     parseParagraphProperties(elem, paragraph) {
@@ -2105,8 +2269,6 @@ class DocumentParser {
         else if (wrapType == "wrapNone") {
             result.cssStyle['display'] = 'block';
             result.cssStyle['position'] = 'relative';
-            result.cssStyle["width"] = "0px";
-            result.cssStyle["height"] = "0px";
             if (posX.offset)
                 result.cssStyle["left"] = posX.offset;
             if (posY.offset)
