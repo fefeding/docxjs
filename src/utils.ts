@@ -100,7 +100,7 @@ export function clamp(val, min, max) {
      * @param {string} h 16进制颜色表达
      * @return {number} 10进制表达
      */
-export function hexToNumber(h) {
+export function hexToNumber(h: string) {
     if(typeof h !== 'string') return h;
 
     h = h.toLowerCase();
@@ -127,7 +127,7 @@ export function hexToNumber(h) {
  * @param {number} v 数值
  * @return {string} 16进制表达
  */
-export function numberToHex(v) {
+export function numberToHex(v: number) {
     let hex = '0123456789abcdef';
     
     let h = '';
@@ -143,7 +143,7 @@ export function numberToHex(v) {
  * 16进制颜色转为r g b a 对象 {r, g , b, a}
  * @param {string}} hex 16进度的颜色
  */
-export function hexToRGBA(hex) {
+export function hexToRGBA(hex: string) {
     if(typeof hex === 'string') hex = hex.trim();   
     else return hex;
 
@@ -228,7 +228,7 @@ export function hexToRGBA(hex) {
  * 把255的rgb值转为0-1的值
  * @param {rgba} color 颜色
  */
-export function rgbToDecimal(color) {
+export function rgbToDecimal(color: any) {
     color = {...color};
     color.r = byteToDecimal(color.r);
     color.g = byteToDecimal(color.g);
@@ -237,7 +237,7 @@ export function rgbToDecimal(color) {
 }
 
 //255值转为0-1的小数
-export function byteToDecimal(b) {
+export function byteToDecimal(b: number) {
     return b / 255;
 }
 
